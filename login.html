@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Index Syndicate — Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;600;700;800&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#0d1315;
+    --panel:#151d20;
+    --panel-raised:#1c262a;
+    --card:#d9d3bf;
+    --teal:#49d6c0;
+    --teal-dim:#276b61;
+    --stamp:#a83f30;
+    --bone:#e6e1d1;
+    --bone-dim:#8d9592;
+    --line: rgba(73,214,192,0.18);
+    --error:#c85040;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:var(--void);
+    color:var(--bone);
+    font-family:'IBM Plex Serif', serif;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 20px;
+    position:relative;
+    overflow-x:hidden;
+  }
+  ::selection{ background:var(--teal); color:var(--void); }
+
+  h1,.display{ font-family:'Big Shoulders Display', sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:0.01em; }
+  .mono{ font-family:'IBM Plex Mono', monospace; letter-spacing:0.08em; text-transform:uppercase; }
+  a{ color:inherit; }
+
+  body::before{
+    content:"";
+    position:fixed; inset:0; pointer-events:none; z-index:0;
+    background: repeating-linear-gradient(0deg, rgba(73,214,192,0.015) 0px, rgba(73,214,192,0.015) 1px, transparent 1px, transparent 3px);
+  }
+  body::after{
+    content:"";
+    position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 55% 45% at 80% 10%, rgba(73,214,192,0.10), transparent 60%),
+      radial-gradient(ellipse 45% 40% at 8% 95%, rgba(168,63,48,0.08), transparent 60%);
+  }
+
+  .wrap{ position:relative; z-index:2; width:100%; max-width:420px; }
+
+  .emblem{
+    width:78px; height:78px; margin:0 auto 18px;
+    display:flex; align-items:center; justify-content:center;
+    filter:drop-shadow(0 0 16px rgba(73,214,192,0.45));
+    animation:emblem-glow 4s ease-in-out infinite;
+  }
+  .emblem img{ width:100%; height:100%; object-fit:contain; }
+  @keyframes emblem-glow{
+    0%,100%{ filter:drop-shadow(0 0 12px rgba(73,214,192,0.32)); }
+    50%{ filter:drop-shadow(0 0 22px rgba(73,214,192,0.58)); }
+  }
+
+  .eyebrow{
+    display:flex; align-items:center; justify-content:center; gap:12px;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.3em; color:var(--teal);
+    margin-bottom:8px;
+  }
+  .eyebrow::before,.eyebrow::after{ content:""; width:20px; height:1px; background:var(--teal); opacity:0.6; }
+
+  h1{ text-align:center; font-size:2.3rem; color:var(--bone); margin-bottom:6px; }
+  .lede{ text-align:center; font-style:italic; color:var(--bone-dim); font-size:0.96rem; margin-bottom:34px; }
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    padding:36px 32px 28px;
+    position:relative;
+  }
+  .card::before{
+    content:""; position:absolute; top:14px; right:14px; width:24px; height:24px;
+    border:2px solid var(--stamp); border-radius:50%; opacity:0.45;
+  }
+
+  .field{ margin-bottom:22px; }
+  .field label{
+    display:block; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.18em;
+    text-transform:uppercase; color:var(--teal); margin-bottom:10px;
+  }
+  .input-row{ position:relative; display:flex; align-items:center; }
+  .field input{
+    width:100%; background:transparent; border:none; border-bottom:1px solid var(--line);
+    color:var(--bone); font-family:'IBM Plex Serif',serif; font-size:1.05rem; padding:10px 4px 12px;
+    outline:none; transition:border-color 0.3s ease;
+  }
+  .field input::placeholder{ color:var(--bone-dim); opacity:0.5; font-style:italic; }
+  .field input:focus{ border-color:var(--teal); }
+  .field.focused label{ color:var(--teal); }
+  .field .underline-fill{
+    position:absolute; bottom:0; left:0; height:1px; width:0; background:var(--teal);
+    transition:width 0.35s ease; box-shadow:0 0 6px rgba(73,214,192,0.6);
+  }
+  .field.focused .underline-fill{ width:100%; }
+
+  .field-error{
+    font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.05em; color:var(--error);
+    margin-top:8px; opacity:0; height:0; overflow:hidden; transition:opacity 0.2s ease;
+  }
+  .field.invalid input{ border-color:var(--error); }
+  .field.invalid .field-error{ opacity:1; height:auto; }
+
+  .toggle-vis{
+    position:absolute; right:4px; background:none; border:none; cursor:pointer;
+    font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; color:var(--bone-dim);
+    padding:6px; transition:color 0.25s ease;
+  }
+  .toggle-vis:hover{ color:var(--teal); }
+
+  .row-between{ display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; flex-wrap:wrap; gap:10px; }
+
+  .check-wrap{ display:flex; align-items:center; gap:10px; cursor:pointer; user-select:none; }
+  .check-wrap input{ display:none; }
+  .check-box{
+    width:18px; height:18px; border:1px solid var(--teal-dim); position:relative; flex-shrink:0;
+    transition:border-color 0.25s ease, background 0.25s ease;
+  }
+  .check-wrap input:checked + .check-box{ background:var(--teal); border-color:var(--teal); }
+  .check-box::after{
+    content:""; position:absolute; left:5px; top:1px; width:5px; height:9px;
+    border:solid var(--void); border-width:0 2px 2px 0; transform:rotate(45deg);
+    opacity:0; transition:opacity 0.2s ease;
+  }
+  .check-wrap input:checked + .check-box::after{ opacity:1; }
+  .check-label{ font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.08em; color:var(--bone-dim); }
+
+  .forgot{ font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.08em; color:var(--teal-dim); text-decoration:none; border-bottom:1px dotted var(--teal-dim); }
+  .forgot:hover{ color:var(--teal); border-color:var(--teal); }
+
+  .btn{
+    width:100%; font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:0.2em; text-transform:uppercase;
+    padding:16px; border:1px solid var(--teal); background:var(--teal); color:var(--void); font-weight:600;
+    cursor:pointer; transition:all 0.25s ease;
+  }
+  .btn:hover{ background:var(--teal-dim); border-color:var(--teal-dim); color:var(--bone); }
+  .btn:active{ transform:scale(0.99); }
+  .btn:disabled{ opacity:0.6; cursor:default; }
+
+  .divider{ display:flex; align-items:center; gap:14px; margin:26px 0 20px; }
+  .divider .ln{ flex:1; height:1px; background:var(--line); }
+  .divider span{ font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.2em; color:var(--bone-dim); }
+
+  .footnote{ text-align:center; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--bone-dim); margin-top:22px; letter-spacing:0.05em; }
+  .footnote a{ color:var(--teal); text-decoration:none; border-bottom:1px dotted var(--teal); }
+  .footnote a:hover{ color:var(--bone); border-color:var(--bone); }
+
+  .page-footer{
+    text-align:center; margin-top:34px; font-family:'IBM Plex Mono',monospace; font-size:10px;
+    letter-spacing:0.15em; color:var(--bone-dim); opacity:0.6;
+  }
+
+  @media (max-width:480px){
+    .card{ padding:28px 20px 22px; }
+    h1{ font-size:1.9rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce){ .emblem{ animation:none; } }
+
+  a:focus-visible, button:focus-visible, input:focus-visible{ outline:2px solid var(--teal); outline-offset:2px; }
+</style>
+</head>
+<body>
+
+  <div class="wrap">
+    <div class="emblem"><img src="data:image/jpeg;base64,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" alt="Index Syndicate emblem"></div>
+    <div class="eyebrow mono">Index Syndicate</div>
+    <h1>Sign In</h1>
+    <p class="lede">Welcome back. Enter your details to continue.</p>
+
+    <form class="card" id="loginForm" autocomplete="off" novalidate>
+      <div class="field" id="emailField">
+        <label for="username">Username or Email</label>
+        <div class="input-row">
+          <input type="text" id="username" name="username" placeholder="you@example.com" required>
+        </div>
+        <div class="underline-fill"></div>
+        <div class="field-error" id="usernameError">This field is required.</div>
+      </div>
+
+      <div class="field" id="passwordField">
+        <label for="password">Password</label>
+        <div class="input-row">
+          <input type="password" id="password" name="password" placeholder="••••••••" required>
+          <button type="button" class="toggle-vis mono" id="toggleVis">SHOW</button>
+        </div>
+        <div class="underline-fill"></div>
+        <div class="field-error" id="passwordError">This field is required.</div>
+      </div>
+
+      <div class="row-between">
+        <label class="check-wrap">
+          <input type="checkbox" id="remember">
+          <span class="check-box"></span>
+          <span class="check-label">Remember me</span>
+        </label>
+        <a href="#" class="forgot">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="btn" id="submitBtn">Sign In</button>
+
+      <div class="divider"><div class="ln"></div><span>OR</span><div class="ln"></div></div>
+
+      <p class="footnote">Don't have an account? <a href="#">Create one</a></p>
+    </form>
+
+    <p class="page-footer">© INDEX SYNDICATE — FAN CONCEPT PAGE, UNOFFICIAL</p>
+  </div>
+
+<script>
+  document.querySelectorAll('.field input').forEach(input=>{
+    const field = input.closest('.field');
+    input.addEventListener('focus', ()=> field.classList.add('focused'));
+    input.addEventListener('blur', ()=> { if(!input.value) field.classList.remove('focused'); });
+    input.addEventListener('input', ()=> field.classList.remove('invalid'));
+  });
+
+  const password = document.getElementById('password');
+  const toggleVis = document.getElementById('toggleVis');
+  toggleVis.addEventListener('click', ()=>{
+    const isPw = password.type === 'password';
+    password.type = isPw ? 'text' : 'password';
+    toggleVis.textContent = isPw ? 'HIDE' : 'SHOW';
+  });
+
+  const form = document.getElementById('loginForm');
+  const btn = document.getElementById('submitBtn');
+  const username = document.getElementById('username');
+
+  form.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    let valid = true;
+    if(!username.value.trim()){ document.getElementById('emailField').classList.add('invalid'); valid = false; }
+    if(!password.value.trim()){ document.getElementById('passwordField').classList.add('invalid'); valid = false; }
+    if(!valid) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Signing In…';
+    setTimeout(()=>{
+      btn.textContent = 'Signed In';
+      setTimeout(()=>{ btn.disabled = false; btn.textContent = 'Sign In'; }, 1200);
+    }, 1000);
+  });
+</script>
+
+</body>
+</html>
