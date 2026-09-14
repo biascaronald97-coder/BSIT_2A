@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kerb — Sell your car by Friday</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --asphalt:#15171A;
+    --asphalt-2:#1F2226;
+    --paper:#F2EFE7;
+    --paper-2:#E7E2D5;
+    --amber:#E8961E;
+    --amber-dark:#B4720F;
+    --steel:#57707A;
+    --ink:#15171A;
+    --ink-soft:#4B4E52;
+    --line: rgba(21,23,26,0.12);
+    --line-light: rgba(242,239,231,0.16);
+    --radius: 2px;
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Space Grotesk', sans-serif;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  p{ margin:0; }
+  a{ color:inherit; }
+  img{ max-width:100%; display:block; }
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 32px; }
+
+  /* ---------- NAV ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:var(--asphalt);
+    border-bottom:1px solid var(--line-light);
+  }
+  nav.wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    height:72px;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    color:var(--paper);
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700; font-size:20px;
+  }
+  .brand .plate{
+    background:var(--amber); color:var(--asphalt);
+    padding:3px 8px; border-radius:3px;
+    font-size:14px; font-weight:700;
+    letter-spacing:0.04em;
+  }
+  .nav-links{ display:flex; align-items:center; gap:36px; }
+  .nav-links a{
+    color:var(--paper-2); text-decoration:none; font-size:15px;
+    padding:6px 0; border-bottom:1px solid transparent;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  .nav-links a:hover{ color:var(--paper); border-color:var(--amber); }
+  .nav-cta{
+    background:var(--amber); color:var(--asphalt);
+    padding:10px 20px; border-radius:3px;
+    font-weight:600; font-size:15px; text-decoration:none;
+    display:inline-block;
+  }
+  .menu-btn{ display:none; background:none; border:none; color:var(--paper); font-size:26px; cursor:pointer; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:var(--asphalt); color:var(--paper);
+    position:relative; overflow:hidden;
+    padding:88px 0 0;
+  }
+  .hero::after{
+    content:"";
+    position:absolute; left:0; right:0; bottom:0; height:64px;
+    background-image: repeating-linear-gradient(to right, var(--amber) 0 46px, transparent 46px 92px);
+    background-position:center; opacity:0.9;
+  }
+  .hero-grid{
+    display:grid; grid-template-columns:1.05fr 0.95fr; gap:56px; align-items:center;
+    padding-bottom:120px;
+  }
+  .eyebrow-row{
+    display:flex; align-items:center; gap:10px; margin-bottom:22px;
+  }
+  .eyebrow-dot{ width:8px; height:8px; background:var(--amber); border-radius:50%; }
+  .eyebrow-row span{ color:var(--paper-2); font-size:14px; }
+  .hero h1{
+    font-size:clamp(40px, 5.2vw, 66px);
+    line-height:1.04;
+    font-weight:700;
+  }
+  .hero h1 .amber{ color:var(--amber); }
+  .hero-sub{
+    margin-top:22px; max-width:460px;
+    color:var(--paper-2); font-size:17px; line-height:1.6;
+  }
+  .hero-actions{ display:flex; gap:16px; margin-top:34px; flex-wrap:wrap; }
+  .btn-primary{
+    background:var(--amber); color:var(--asphalt);
+    padding:15px 26px; border-radius:3px; font-weight:600; font-size:15.5px;
+    text-decoration:none; border:none; cursor:pointer;
+  }
+  .btn-ghost{
+    background:transparent; color:var(--paper);
+    padding:15px 26px; border-radius:3px; font-weight:600; font-size:15.5px;
+    text-decoration:none; border:1px solid var(--line-light);
+  }
+  .hero-note{ margin-top:20px; color:#8B8E92; font-size:13.5px; }
+
+  /* --- plate lookup card --- */
+  .lookup-card{
+    background:var(--paper); color:var(--ink);
+    border-radius:6px; padding:28px;
+    box-shadow:0 30px 60px rgba(0,0,0,0.35);
+  }
+  .lookup-card h3{ font-size:17px; font-weight:600; }
+  .lookup-card .desc{ color:var(--ink-soft); font-size:14px; margin-top:6px; }
+  .plate-input{
+    margin-top:20px;
+    display:flex; align-items:stretch;
+    border:2px solid var(--asphalt); border-radius:4px; overflow:hidden;
+  }
+  .plate-input .flag{
+    background:var(--steel); color:#fff; font-size:11px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+    width:38px; letter-spacing:0.03em;
+  }
+  .plate-input input{
+    flex:1; border:none; background:transparent;
+    font-family:'Space Grotesk', sans-serif; font-size:24px; font-weight:700;
+    letter-spacing:0.08em; padding:12px 14px; color:var(--asphalt);
+    text-transform:uppercase; outline:none; min-width:0;
+  }
+  .plate-input input::placeholder{ color:#BFBAA9; }
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px; }
+  .field-row select, .field-row input{
+    width:100%; padding:11px 12px; border:1px solid var(--line);
+    border-radius:4px; font-family:'Work Sans',sans-serif; font-size:14px;
+    background:#fff; color:var(--ink);
+  }
+  .lookup-submit{
+    margin-top:16px; width:100%; padding:14px; border:none; border-radius:4px;
+    background:var(--asphalt); color:var(--paper); font-weight:600; font-size:15px;
+    cursor:pointer;
+  }
+  .lookup-fine{ margin-top:12px; color:#8B8983; font-size:12px; text-align:center; }
+
+  /* ---------- STATS STRIP ---------- */
+  .stats{
+    background:var(--paper-2); border-bottom:1px solid var(--line);
+  }
+  .stats .wrap{
+    display:grid; grid-template-columns:repeat(3,1fr);
+    padding:44px 32px;
+  }
+  .stat{ padding:0 28px; border-left:1px solid var(--line); }
+  .stat:first-child{ border-left:none; padding-left:0; }
+  .stat .num{
+    font-family:'Space Grotesk',sans-serif; font-size:38px; font-weight:700;
+    color:var(--asphalt);
+  }
+  .stat .label{ margin-top:6px; color:var(--ink-soft); font-size:14.5px; }
+
+  /* ---------- SECTION HEADS ---------- */
+  section{ padding:96px 0; }
+  .section-head{ max-width:560px; margin-bottom:56px; }
+  .section-head h2{ font-size:clamp(28px,3.4vw,38px); font-weight:600; line-height:1.15; }
+  .section-head p{ margin-top:14px; color:var(--ink-soft); font-size:16px; line-height:1.6; }
+
+  /* ---------- HOW IT WORKS ---------- */
+  .steps{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:0;
+    border-top:1px solid var(--line);
+  }
+  .step{
+    padding:36px 28px 36px 0; border-right:1px solid var(--line);
+  }
+  .step:last-child{ border-right:none; }
+  .step .step-num{
+    font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:700;
+    color:var(--amber-dark); margin-bottom:18px; display:block;
+  }
+  .step h3{ font-size:19px; font-weight:600; }
+  .step p{ margin-top:10px; color:var(--ink-soft); font-size:14.5px; line-height:1.6; }
+
+  /* ---------- WHY / COMPARISON ---------- */
+  .why{ background:var(--asphalt); color:var(--paper); }
+  .why .section-head p{ color:var(--paper-2); }
+  .compare{
+    display:grid; grid-template-columns:1fr 1fr; gap:1px;
+    background:var(--line-light); border:1px solid var(--line-light);
+  }
+  .compare-col{ background:var(--asphalt); padding:32px; }
+  .compare-col.highlight{ background:var(--asphalt-2); }
+  .compare-col h4{
+    font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:17px;
+    margin-bottom:20px; display:flex; align-items:center; gap:8px;
+  }
+  .compare-col.highlight h4::before{ content:"●"; color:var(--amber); font-size:11px; }
+  .compare-col:not(.highlight) h4::before{ content:"●"; color:#5B5E62; font-size:11px; }
+  .compare-col ul{ list-style:none; margin:0; padding:0; }
+  .compare-col li{
+    padding:11px 0; border-top:1px solid var(--line-light);
+    color:var(--paper-2); font-size:14.5px;
+    display:flex; justify-content:space-between; gap:12px;
+  }
+  .compare-col li:first-child{ border-top:none; }
+  .compare-col li b{ color:var(--paper); font-weight:600; }
+
+  /* ---------- TESTIMONIALS ---------- */
+  .testimonials .wrap{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:28px;
+  }
+  .tcard{
+    background:#fff; border:1px solid var(--line); border-radius:4px;
+    padding:26px;
+  }
+  .tcard .quote{ font-size:15px; line-height:1.65; color:var(--ink); }
+  .tcard .who{ margin-top:18px; display:flex; align-items:center; gap:10px; }
+  .tcard .avatar{
+    width:36px; height:36px; border-radius:50%;
+    background:var(--steel); color:#fff; font-size:13px; font-weight:600;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',sans-serif;
+  }
+  .tcard .name{ font-size:13.5px; font-weight:600; }
+  .tcard .car{ font-size:12.5px; color:var(--ink-soft); }
+
+  /* ---------- FINAL CTA ---------- */
+  .final{
+    background:var(--amber); color:var(--asphalt);
+    text-align:left;
+  }
+  .final .wrap{
+    display:flex; align-items:center; justify-content:space-between; gap:40px;
+    flex-wrap:wrap;
+  }
+  .final h2{ font-size:clamp(26px,3.4vw,36px); font-weight:700; max-width:520px; }
+  .final .btn-primary{ background:var(--asphalt); color:var(--paper); }
+
+  /* ---------- FOOTER ---------- */
+  footer{ background:var(--asphalt); color:#8B8E92; padding:48px 0 32px; }
+  footer .wrap{
+    display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:24px;
+  }
+  footer .foot-brand{ color:var(--paper); font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:17px; }
+  footer .foot-links{ display:flex; gap:28px; flex-wrap:wrap; }
+  footer .foot-links a{ color:#8B8E92; text-decoration:none; font-size:13.5px; }
+  footer .foot-links a:hover{ color:var(--paper); }
+  footer .foot-bottom{
+    margin-top:36px; padding-top:20px; border-top:1px solid var(--line-light);
+    font-size:12.5px; color:#6C6F73;
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:900px){
+    .nav-links{ display:none; }
+    .menu-btn{ display:block; }
+    .hero-grid{ grid-template-columns:1fr; }
+    .stats .wrap{ grid-template-columns:1fr; padding:0; }
+    .stat{ border-left:none; border-top:1px solid var(--line); padding:26px 32px; }
+    .stat:first-child{ border-top:none; }
+    .steps{ grid-template-columns:1fr; }
+    .step{ border-right:none; border-bottom:1px solid var(--line); padding:28px 0; }
+    .step:last-child{ border-bottom:none; }
+    .compare{ grid-template-columns:1fr; }
+    .testimonials .wrap{ grid-template-columns:1fr; }
+    .final .wrap{ flex-direction:column; align-items:flex-start; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <div class="brand"><span class="plate">KERB</span> Sell your car</div>
+    <div class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#why">Why Kerb</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#get-offer" class="nav-cta">Get your offer</a>
+    </div>
+    <button class="menu-btn" aria-label="Menu">☰</button>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow-row"><span class="eyebrow-dot"></span><span>Over 40,000 cars sold since 2019</span></div>
+      <h1>Sell your car<br>by <span class="amber">Friday.</span></h1>
+      <p class="hero-sub">Enter your plate, get a real offer in under two minutes, and have someone pick up the car and hand you a bank transfer — no listing, no haggling, no dealer.</p>
+      <div class="hero-actions">
+        <a href="#get-offer" class="btn-primary">Get your offer</a>
+        <a href="#how" class="btn-ghost">See how it works</a>
+      </div>
+      <p class="hero-note">Free to use. No obligation to accept. Offers valid for 7 days.</p>
+    </div>
+
+    <div class="lookup-card" id="get-offer">
+      <h3>What's your car worth today?</h3>
+      <p class="desc">We'll pull the details from your plate automatically.</p>
+      <div class="plate-input">
+        <div class="flag">REG</div>
+        <input type="text" placeholder="AB12 CDE" maxlength="8" id="plateInput">
+      </div>
+      <div class="field-row">
+        <select>
+          <option>Mileage</option>
+          <option>Under 20,000</option>
+          <option>20,000–60,000</option>
+          <option>60,000–100,000</option>
+          <option>Over 100,000</option>
+        </select>
+        <select>
+          <option>Condition</option>
+          <option>Excellent</option>
+          <option>Good</option>
+          <option>Fair</option>
+          <option>Needs work</option>
+        </select>
+      </div>
+      <button class="lookup-submit" id="lookupBtn">Get my offer</button>
+      <p class="lookup-fine">Takes under 2 minutes. No spam calls.</p>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="wrap">
+    <div class="stat"><div class="num">6.4%</div><div class="label">above average part-exchange value</div></div>
+    <div class="stat"><div class="num">48 hrs</div><div class="label">average time from offer to payment</div></div>
+    <div class="stat"><div class="num">£0</div><div class="label">listing fees, admin fees, or hidden cuts</div></div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Three steps, no forecourt required</h2>
+      <p>Everything happens from your phone. We come to you for the handover.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">01</span>
+        <h3>Get your offer</h3>
+        <p>Enter your reg plate and a few condition details. We price against live sale data from your area, not a generic guide.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">02</span>
+        <h3>Book a inspection</h3>
+        <p>A local inspector checks the car in 20 minutes, at your home or workplace, at a time that suits you.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <h3>Get paid on the spot</h3>
+        <p>If the inspection matches your description, the transfer lands before the car leaves your driveway.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="why" id="why">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Where the money actually goes</h2>
+      <p>A dealer trade-in and a private sale both cost you something. Kerb was built to remove both costs.</p>
+    </div>
+    <div class="compare">
+      <div class="compare-col">
+        <h4>Dealer trade-in</h4>
+        <ul>
+          <li>Typical offer <b>12–18% under market</b></li>
+          <li>Time to cash <b>Same day, low price</b></li>
+          <li>Your effort <b>Negotiate in person</b></li>
+          <li>Who inspects it <b>The buyer, alone</b></li>
+        </ul>
+      </div>
+      <div class="compare-col highlight">
+        <h4>Selling with Kerb</h4>
+        <ul>
+          <li>Typical offer <b>Within 3% of market</b></li>
+          <li>Time to cash <b>Under 48 hours</b></li>
+          <li>Your effort <b>One form, one call</b></li>
+          <li>Who inspects it <b>Independent inspector</b></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonials" id="reviews">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>People who sold last week</h2>
+      <p>Real handovers, real amounts, from the past few days.</p>
+    </div>
+    <div class="wrap" style="padding:0;">
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:28px;">
+        <div class="tcard">
+          <p class="quote">"Had a number in ninety seconds. The inspector showed up two days later and the money was in my account before he'd left the street."</p>
+          <div class="who">
+            <div class="avatar">MO</div>
+            <div><div class="name">Maria O.</div><div class="car">2019 Volkswagen Golf</div></div>
+          </div>
+        </div>
+        <div class="tcard">
+          <p class="quote">"I'd tried selling privately for three weeks with nothing but time-wasters. This took less time than washing the car beforehand."</p>
+          <div class="who">
+            <div class="avatar">DK</div>
+            <div><div class="name">Daniel K.</div><div class="car">2016 Ford Focus</div></div>
+          </div>
+        </div>
+        <div class="tcard">
+          <p class="quote">"Offer came in higher than the dealer's trade-in quote, and nobody tried to talk me down once the inspector arrived."</p>
+          <div class="who">
+            <div class="avatar">PR</div>
+            <div><div class="name">Priya R.</div><div class="car">2021 Toyota Corolla</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <h2>Your car's worth more than a trade-in quote. Find out how much.</h2>
+    <a href="#get-offer" class="btn-primary">Get your offer</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <div class="foot-brand">KERB</div>
+      <p style="margin-top:8px; font-size:13px; max-width:280px;">A faster, fairer way to sell the car you already own.</p>
+    </div>
+    <div class="foot-links">
+      <a href="#how">How it works</a>
+      <a href="#why">Why Kerb</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#">Help centre</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+  <div class="wrap foot-bottom">© 2026 Kerb. All offers subject to inspection.</div>
+</footer>
+
+<script>
+  const plateInput = document.getElementById('plateInput');
+  plateInput.addEventListener('input', () => {
+    plateInput.value = plateInput.value.toUpperCase();
+  });
+  document.getElementById('lookupBtn').addEventListener('click', () => {
+    if(!plateInput.value.trim()){
+      plateInput.style.borderColor = '';
+      plateInput.focus();
+      return;
+    }
+  });
+</script>
+
+</body>
+</html>
